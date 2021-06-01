@@ -54,7 +54,7 @@ const LotteryCard = () => {
   const [onPresentApprove] = useModal(<PurchaseWarningModal />)
   const { claimAmount, setLastUpdated } = useTotalClaim()
   const { onMultiClaim } = useMultiClaimLottery()
-  const cakeBalance = useTokenBalance(getCakeAddress())
+  const { balance: cakeBalance } = useTokenBalance(getCakeAddress())
   const { handleApprove, requestedApproval } = useApproval(onPresentApprove)
 
   const handleClaim = useCallback(async () => {
@@ -94,7 +94,7 @@ const LotteryCard = () => {
   return (
     <StyledLotteryCard>
       <CardBody>
-        <Heading size="xl" mb="24px">
+        <Heading scale="xl" mb="24px">
           {t('Your Lottery Winnings')}
         </Heading>
         <CardImage src="/images/ticket.svg" alt="cake logo" width={64} height={64} />

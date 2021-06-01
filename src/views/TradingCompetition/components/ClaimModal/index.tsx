@@ -53,7 +53,7 @@ const ClaimModal: React.FC<CompetitionProps> = ({ onDismiss, onClaimSuccess, use
         onClaimSuccess()
       })
       .on('error', (error) => {
-        toastError('Error', error?.message)
+        toastError(t('Error'), error?.message)
         setIsConfirming(false)
       })
   }
@@ -74,7 +74,7 @@ const ClaimModal: React.FC<CompetitionProps> = ({ onDismiss, onClaimSuccess, use
           </Text>
         </Flex>
         {/* cake */}
-        <Heading mt="16px" size="md" mb={canClaimNFT ? '16px' : '0px'}>
+        <Heading mt="16px" scale="md" mb={canClaimNFT ? '16px' : '0px'}>
           {cakeReward.toFixed(2)} CAKE
         </Heading>
         {/* NFT */}

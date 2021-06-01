@@ -2,16 +2,16 @@ import React from 'react'
 import { Flex, Text, Button, Heading, useModal, Skeleton } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { Token } from 'config/constants/types'
-import { getAddress } from 'utils/addressHelpers'
 import { useTranslation } from 'contexts/Localization'
 import { getFullDisplayBalance, getBalanceNumber, formatNumber } from 'utils/formatBalance'
-import { useGetApiPrice } from 'state/hooks'
+import Balance from 'components/Balance'
 import CollectModal from '../Modals/CollectModal'
 
 interface HarvestActionsProps {
   earnings: BigNumber
   earningToken: Token
   sousId: number
+  earningTokenPrice: number
   isBnbPool: boolean
   isLoading?: boolean
 }
@@ -21,15 +21,17 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
   earningToken,
   sousId,
   isBnbPool,
+  earningTokenPrice,
   isLoading = false,
 }) => {
   const { t } = useTranslation()
-  const earningTokenPrice = useGetApiPrice(earningToken.address ? getAddress(earningToken.address) : '')
+  const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
+  const formattedBalance = formatNumber(earningTokenBalance, 3, 3)
+
+  const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
+  const earningsDollarValue = formatNumber(earningTokenDollarBalance)
+
   const fullBalance = getFullDisplayBalance(earnings, earningToken.decimals)
-  const formattedBalance = formatNumber(getBalanceNumber(earnings, earningToken.decimals), 3, 3)
-  const earningsDollarValue = formatNumber(
-    getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals),
-  )
   const hasEarnings = earnings.toNumber() > 0
   const isCompoundPool = sousId === 0
 
@@ -53,10 +55,28 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
             <Skeleton width="80px" height="48px" />
           ) : (
             <>
-              <Heading color={hasEarnings ? 'text' : 'textDisabled'}>{hasEarnings ? formattedBalance : 0}</Heading>
-              <Text fontSize="12px" color={hasEarnings ? 'textSubtle' : 'textDisabled'}>
-                {`~${hasEarnings ? earningsDollarValue : 0} USD`}
-              </Text>
+              {hasEarnings ? (
+                <Balance bold fontSize="20px" decimals={5} value={earningTokenBalance} />
+              ) : (
+                <Heading color="textDisabled">0</Heading>
+              )}
+              {earningTokenPrice !== 0 && (
+                <Text fontSize="12px" color={hasEarnings ? 'textSubtle' : 'textDisabled'}>
+                  ~
+                  {hasEarnings ? (
+                    <Balance
+                      display="inline"
+                      fontSize="12px"
+                      color="textSubtle"
+                      decimals={2}
+                      value={earningTokenDollarBalance}
+                      unit=" USD"
+                    />
+                  ) : (
+                    '0 USD'
+                  )}
+                </Text>
+              )}
             </>
           )}
         </Flex>

@@ -133,7 +133,7 @@ const UserName: React.FC = () => {
         setExistingUserState(ExistingUserState.CREATED)
       } else {
         const data = await response.json()
-        toastError(data?.error?.message)
+        toastError(t('Error'), data?.error?.message)
       }
     } catch (error) {
       toastError(error?.message ? error.message : JSON.stringify(error))
@@ -153,7 +153,7 @@ const UserName: React.FC = () => {
 
         if (response.ok) {
           const dateCreated = formatDistance(parseISO(data.created_at), new Date())
-          setMessage(`Created ${dateCreated} ago`)
+          setMessage(t('Created %dateCreated% ago', { dateCreated }))
 
           actions.setUserName(data.username)
           setExistingUserState(ExistingUserState.CREATED)
@@ -162,21 +162,21 @@ const UserName: React.FC = () => {
           setExistingUserState(ExistingUserState.NEW)
         }
       } catch (error) {
-        toastError('Error: Unable to verify username')
+        toastError(t('Error'), t('Unable to verify username'))
       }
     }
 
     if (account) {
       fetchUser()
     }
-  }, [account, setExistingUserState, setIsValid, setMessage, actions, toastError])
+  }, [account, setExistingUserState, setIsValid, setMessage, actions, toastError, t])
 
   return (
     <>
       <Text fontSize="20px" color="textSubtle" bold>
-        {t(`Step ${4}`)}
+        {t('Step %num%', { num: 4 })}
       </Text>
-      <Heading as="h3" size="xl" mb="24px">
+      <Heading as="h3" scale="xl" mb="24px">
         {t('Set Your Name')}
       </Heading>
       <Text as="p" mb="24px">
@@ -184,7 +184,7 @@ const UserName: React.FC = () => {
       </Text>
       <Card mb="24px">
         <CardBody>
-          <Heading as="h4" size="lg" mb="8px">
+          <Heading as="h4" scale="lg" mb="8px">
             {t('Set Your Name')}
           </Heading>
           <Text as="p" color="textSubtle" mb="24px">

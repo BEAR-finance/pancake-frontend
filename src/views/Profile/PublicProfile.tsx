@@ -19,6 +19,7 @@ import {
 import { useTranslation } from 'contexts/Localization'
 import { useProfile } from 'state/hooks'
 import usePersistState from 'hooks/usePersistState'
+import { getBscScanAddressUrl } from 'utils/bscscan'
 import Menu from './components/Menu'
 import CardHeader from './components/CardHeader'
 import Collectibles from './components/Collectibles'
@@ -112,7 +113,7 @@ const PublicProfile = () => {
                   <Icon ml="4px" onClick={toggleUsernameVisibility} cursor="pointer" />
                 </Flex>
                 <Flex alignItems="center">
-                  <AddressLink href={`https://bscscan.com/address/${account}`} color="text" external>
+                  <AddressLink href={getBscScanAddressUrl(account)} color="text" external>
                     {account}
                     <OpenNewIcon ml="4px" />
                   </AddressLink>
@@ -135,7 +136,7 @@ const PublicProfile = () => {
           <CardBody>
             <StatBox icon={PrizeIcon} title={points} subtitle={t('Points')} mb="24px" />
             <Section>
-              <Heading as="h4" size="md" mb="16px">
+              <Heading as="h4" scale="md" mb="16px">
                 {t('Achievements')}
               </Heading>
               <AchievementsList />

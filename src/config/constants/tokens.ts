@@ -228,6 +228,15 @@ const tokens = {
     decimals: 18,
     projectLink: 'https://swirgepay.com/',
   },
+  swg: {
+    symbol: 'SWG',
+    address: {
+      56: '0xe792f64c582698b8572aaf765bdc426ac3aefb6b',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://swirgepay.com/',
+  },
   sfp: {
     symbol: 'SFP',
     address: {
@@ -1208,6 +1217,249 @@ const tokens = {
     },
     decimals: 18,
     projectLink: 'https://winklink.org/',
+  },
+  mcoin: {
+    symbol: 'mCOIN',
+    address: {
+      56: '0x49022089e78a8d46ec87a3af86a1db6c189afa6f',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://mirror.finance/',
+  },
+  math: {
+    symbol: 'MATH',
+    address: {
+      56: '0xf218184af829cf2b0019f8e6f0b2423498a36983',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://mathwallet.org/',
+  },
+  kun: {
+    symbol: 'KUN',
+    address: {
+      56: '0x1A2fb0Af670D0234c2857FaD35b789F8Cb725584',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://chemix.io/home',
+  },
+  qsd: {
+    symbol: 'QSD',
+    address: {
+      56: '0x07AaA29E63FFEB2EBf59B33eE61437E1a91A3bb2',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://chemix.io/home',
+  },
+  hyfi: {
+    symbol: 'HYFI',
+    address: {
+      56: '0x9a319b959e33369C5eaA494a770117eE3e585318',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://hyfi.pro/#/',
+  },
+  oin: {
+    symbol: 'OIN',
+    address: {
+      56: '0x658E64FFcF40D240A43D52CA9342140316Ae44fA',
+      97: '',
+    },
+    decimals: 8,
+    projectLink: 'https://oin.finance/',
+  },
+  doge: {
+    symbol: 'DOGE',
+    address: {
+      56: '0xba2ae424d960c26247dd6c32edc70b295c744c43',
+      97: '',
+    },
+    decimals: 8,
+    projectLink: 'https://dogecoin.com/',
+  },
+  fine: {
+    symbol: 'FINE',
+    address: {
+      56: '0x4e6415a5727ea08aae4580057187923aec331227',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://refinable.com/',
+  },
+  one: {
+    symbol: 'ONE',
+    address: {
+      56: '0x04baf95fd4c52fd09a56d840baee0ab8d7357bf0',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.bigone.com/',
+  },
+  pmon: {
+    symbol: 'PMON',
+    address: {
+      56: '0x1796ae0b0fa4862485106a0de9b654eFE301D0b2',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://polkamon.com/',
+  },
+  hotcross: {
+    symbol: 'HOTCROSS',
+    address: {
+      56: '0x4FA7163E153419E0E1064e418dd7A99314Ed27b6',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.hotcross.com/',
+  },
+  τdoge: {
+    symbol: 'τDOGE',
+    address: {
+      56: '0xe550a593d09fbc8dcd557b5c88cea6946a8b404a',
+      97: '',
+    },
+    decimals: 8,
+    projectLink: 'https://www.btcst.finance/',
+  },
+  btr: {
+    symbol: 'BTR',
+    address: {
+      56: '0x5a16E8cE8cA316407c6E6307095dc9540a8D62B3',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.bitrue.com/',
+  },
+  ubxt: {
+    symbol: 'UBXT',
+    address: {
+      56: '0xbbeb90cfb6fafa1f69aa130b7341089abeef5811',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://upbots.com/',
+  },
+  wmass: {
+    symbol: 'WMASS',
+    address: {
+      56: '0x7e396bfc8a2f84748701167c2d622f041a1d7a17',
+      97: '',
+    },
+    decimals: 8,
+    projectLink: 'https://massnet.org/en/',
+  },
+  rfox: {
+    symbol: 'RFOX',
+    address: {
+      56: '0x0a3a21356793b49154fd3bbe91cbc2a16c0457f5',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.redfoxlabs.io/',
+  },
+  xend: {
+    symbol: 'XEND',
+    address: {
+      56: '0x4a080377f83D669D7bB83B3184a8A5E61B500608',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://xend.finance/',
+  },
+  cyc: {
+    symbol: 'CYC',
+    address: {
+      56: '0x810ee35443639348adbbc467b33310d2ab43c168',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://cyclone.xyz/',
+  },
+  chr: {
+    symbol: 'CHR',
+    address: {
+      56: '0xf9CeC8d50f6c8ad3Fb6dcCEC577e05aA32B224FE',
+      97: '',
+    },
+    decimals: 6,
+    projectLink: 'https://chromia.com/',
+  },
+  kalm: {
+    symbol: 'KALM',
+    address: {
+      56: '0x4BA0057f784858a48fe351445C672FF2a3d43515',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://kalmar.io/',
+  },
+  deri: {
+    symbol: 'DERI',
+    address: {
+      56: '0xe60eaf5A997DFAe83739e035b005A33AfdCc6df5',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://deri.finance/#/index',
+  },
+  well: {
+    symbol: 'WELL',
+    address: {
+      56: '0xf07a32eb035b786898c00bb1c64d8c6f8e7a46d5',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.bitwellex.com/',
+  },
+  popen: {
+    symbol: 'pOPEN',
+    address: {
+      56: '0xabae871b7e3b67aeec6b46ae9fe1a91660aadac5',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://opendao.io/',
+  },
+  ez: {
+    symbol: 'EZ',
+    address: {
+      56: '0x5512014efa6cd57764fa743756f7a6ce3358cc83',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://easyfi.network/',
+  },
+  vrt: {
+    symbol: 'VRT',
+    address: {
+      56: '0x5f84ce30dc3cf7909101c69086c50de191895883',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://venus.io/',
+  },
+  tusd: {
+    symbol: 'TUSD',
+    address: {
+      56: '0x14016e85a25aeb13065688cafb43044c2ef86784',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.trueusd.com/',
+  },
+  mtrg: {
+    symbol: 'MTRG',
+    address: {
+      56: '0xbd2949f67dcdc549c6ebe98696449fa79d988a9f',
+      97: '',
+    },
+    decimals: 18,
+    projectLink: 'https://www.meter.io/',
   },
 }
 

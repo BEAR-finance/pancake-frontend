@@ -4,28 +4,24 @@ import { Modal, Text, Flex, Image, Button, Slider, BalanceInput, AutoRenewIcon }
 import { useTranslation } from 'contexts/Localization'
 import { useWeb3React } from '@web3-react/core'
 import { BASE_EXCHANGE_URL } from 'config'
+import { useAppDispatch } from 'state'
 import { BIG_TEN } from 'utils/bigNumber'
+import { useCakeVault, usePriceCakeBusd } from 'state/hooks'
 import { useCakeVaultContract } from 'hooks/useContract'
 import useTheme from 'hooks/useTheme'
 import useWithdrawalFeeTimer from 'hooks/cakeVault/useWithdrawalFeeTimer'
-import { VaultFees } from 'hooks/cakeVault/useGetVaultFees'
 import BigNumber from 'bignumber.js'
 import { getFullDisplayBalance, formatNumber, getDecimalAmount } from 'utils/formatBalance'
 import useToast from 'hooks/useToast'
+import { fetchCakeVaultUserData } from 'state/pools'
 import { Pool } from 'state/types'
-import { VaultUser } from 'views/Pools/types'
 import { convertCakeToShares } from '../../helpers'
 import FeeSummary from './FeeSummary'
 
 interface VaultStakeModalProps {
   pool: Pool
   stakingMax: BigNumber
-  stakingTokenPrice: number
-  userInfo: VaultUser
   isRemovingStake?: boolean
-  pricePerFullShare?: BigNumber
-  vaultFees?: VaultFees
-  setLastUpdated: () => void
   onDismiss?: () => void
 }
 
@@ -33,41 +29,45 @@ const StyledButton = styled(Button)`
   flex-grow: 1;
 `
 
-const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
-  pool,
-  stakingMax,
-  stakingTokenPrice,
-  pricePerFullShare,
-  userInfo,
-  isRemovingStake = false,
-  vaultFees,
-  onDismiss,
-  setLastUpdated,
-}) => {
-  const { account } = useWeb3React()
+const VaultStakeModal: React.FC<VaultStakeModalProps> = ({ pool, stakingMax, isRemovingStake = false, onDismiss }) => {
+  const dispatch = useAppDispatch()
   const { stakingToken } = pool
+  const { account } = useWeb3React()
   const cakeVaultContract = useCakeVaultContract()
+  const {
+    userData: { lastDepositedTime, userShares },
+    pricePerFullShare,
+  } = useCakeVault()
   const { t } = useTranslation()
   const { theme } = useTheme()
   const { toastSuccess, toastError } = useToast()
   const [pendingTx, setPendingTx] = useState(false)
   const [stakeAmount, setStakeAmount] = useState('')
   const [percent, setPercent] = useState(0)
-  const { hasUnstakingFee } = useWithdrawalFeeTimer(parseInt(userInfo.lastDepositedTime))
-  const usdValueStaked = stakeAmount && formatNumber(new BigNumber(stakeAmount).times(stakingTokenPrice).toNumber())
+  const { hasUnstakingFee } = useWithdrawalFeeTimer(parseInt(lastDepositedTime, 10), userShares)
+  const cakePriceBusd = usePriceCakeBusd()
+  const usdValueStaked =
+    cakePriceBusd.gt(0) && stakeAmount ? formatNumber(new BigNumber(stakeAmount).times(cakePriceBusd).toNumber()) : ''
 
-  const handleStakeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value || '0'
-    const convertedInput = new BigNumber(inputValue).multipliedBy(BIG_TEN.pow(stakingToken.decimals))
-    const percentage = Math.floor(convertedInput.dividedBy(stakingMax).multipliedBy(100).toNumber())
-    setStakeAmount(inputValue)
-    setPercent(percentage > 100 ? 100 : percentage)
+  const handleStakeInputChange = (input: string) => {
+    if (input) {
+      const convertedInput = new BigNumber(input).multipliedBy(BIG_TEN.pow(stakingToken.decimals))
+      const percentage = Math.floor(convertedInput.dividedBy(stakingMax).multipliedBy(100).toNumber())
+      setPercent(percentage > 100 ? 100 : percentage)
+    } else {
+      setPercent(0)
+    }
+    setStakeAmount(input)
   }
 
   const handleChangePercent = (sliderPercent: number) => {
-    const percentageOfStakingMax = stakingMax.dividedBy(100).multipliedBy(sliderPercent)
-    const amountToStake = getFullDisplayBalance(percentageOfStakingMax, stakingToken.decimals, stakingToken.decimals)
-    setStakeAmount(amountToStake)
+    if (sliderPercent > 0) {
+      const percentageOfStakingMax = stakingMax.dividedBy(100).multipliedBy(sliderPercent)
+      const amountToStake = getFullDisplayBalance(percentageOfStakingMax, stakingToken.decimals, stakingToken.decimals)
+      setStakeAmount(amountToStake)
+    } else {
+      setStakeAmount('')
+    }
     setPercent(sliderPercent)
   }
 
@@ -76,7 +76,7 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
     const shareStakeToWithdraw = convertCakeToShares(convertedStakeAmount, pricePerFullShare)
     // trigger withdrawAll function if the withdrawal will leave 0.000001 CAKE or less
     const triggerWithdrawAllThreshold = new BigNumber(1000000000000)
-    const sharesRemaining = userInfo.shares.minus(shareStakeToWithdraw.sharesAsBigNumber)
+    const sharesRemaining = userShares.minus(shareStakeToWithdraw.sharesAsBigNumber)
     const isWithdrawingAll = sharesRemaining.lte(triggerWithdrawAllThreshold)
 
     if (isWithdrawingAll) {
@@ -90,12 +90,12 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
           toastSuccess(t('Unstaked!'), t('Your earnings have also been harvested to your wallet'))
           setPendingTx(false)
           onDismiss()
-          setLastUpdated()
+          dispatch(fetchCakeVaultUserData({ account }))
         })
         .on('error', (error) => {
           console.error(error)
           // Remove message from toast before prod
-          toastError(t('Error'), t(`${error.message} - Please try again.`))
+          toastError(t('Error'), t('%error% - Please try again.', { error: error.message }))
           setPendingTx(false)
         })
     } else {
@@ -111,12 +111,12 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
           toastSuccess(t('Unstaked!'), t('Your earnings have also been harvested to your wallet'))
           setPendingTx(false)
           onDismiss()
-          setLastUpdated()
+          dispatch(fetchCakeVaultUserData({ account }))
         })
         .on('error', (error) => {
           console.error(error)
           // Remove message from toast before prod
-          toastError(t('Error'), t(`${error.message} - Please try again.`))
+          toastError(t('Error'), t('%error% - Please try again.', { error: error.message }))
           setPendingTx(false)
         })
     }
@@ -135,12 +135,12 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
         toastSuccess(t('Staked!'), t('Your funds have been staked in the pool'))
         setPendingTx(false)
         onDismiss()
-        setLastUpdated()
+        dispatch(fetchCakeVaultUserData({ account }))
       })
       .on('error', (error) => {
         console.error(error)
         // Remove message from toast before prod
-        toastError(t('Error'), t(`${error.message} - Please try again.`))
+        toastError(t('Error'), t('%error% - Please try again.', { error: error.message }))
         setPendingTx(false)
       })
   }
@@ -174,11 +174,11 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
       </Flex>
       <BalanceInput
         value={stakeAmount}
-        onChange={handleStakeInputChange}
-        currencyValue={`~${usdValueStaked || 0} USD`}
+        onUserInput={handleStakeInputChange}
+        currencyValue={cakePriceBusd.gt(0) && `~${usdValueStaked || 0} USD`}
       />
       <Text mt="8px" ml="auto" color="textSubtle" fontSize="12px" mb="8px">
-        Balance: {getFullDisplayBalance(stakingMax, stakingToken.decimals)}
+        {t('Balance: %balance%', { balance: getFullDisplayBalance(stakingMax, stakingToken.decimals) })}
       </Text>
       <Slider
         min={0}
@@ -204,12 +204,7 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
         </StyledButton>
       </Flex>
       {isRemovingStake && hasUnstakingFee && (
-        <FeeSummary
-          stakingTokenSymbol={stakingToken.symbol}
-          lastDepositedTime={userInfo.lastDepositedTime}
-          vaultFees={vaultFees}
-          stakeAmount={stakeAmount}
-        />
+        <FeeSummary stakingTokenSymbol={stakingToken.symbol} stakeAmount={stakeAmount} />
       )}
       <Button
         isLoading={pendingTx}
@@ -222,7 +217,7 @@ const VaultStakeModal: React.FC<VaultStakeModalProps> = ({
       </Button>
       {!isRemovingStake && (
         <Button mt="8px" as="a" external href={BASE_EXCHANGE_URL} variant="secondary">
-          {t('Get')} {stakingToken.symbol}
+          {t('Get %symbol%', { symbol: stakingToken.symbol })}
         </Button>
       )}
     </Modal>
